@@ -2,14 +2,14 @@
         let currentLang = 'tr';
         let selectedCount = 6; // Default to 6 for the predefined channels
         
-        // Default channel IDs provided by the user
+        // Default channel IDs (popular news channels)
         let defaultChannelIds = [
             "DbQ4HGgr7Xo",
             "VXMR3YQ7W3s",
             "RNVNlJSUFoE",
-            "6BX-NUzBSp8",
-            "ztmY_cCtUl0",
-            "nmY9i63t6qo"
+            "ZSWPj9szKb8",
+            "6BX-NUzBSp8", 
+            "nmY9i63t6qo"  
         ];
         
         let channelIds = Array(25).fill('');
@@ -20,6 +20,7 @@
         
         let activeChannels = [];
         let autoStart = true;
+        let isFullscreen = false;
 
         // DOM elements
         const settingsPage = document.getElementById('settings-page');
@@ -44,7 +45,9 @@
                 channelPlaceholder: "Kanal ID",
                 maxChannelsReached: "Maksimum kanal sayısına ulaştınız!",
                 enterAtLeastOne: "En az bir kanal ID'si girmelisiniz!",
-                autoPlay: "Sayfa açılışında kanalları otomatik oynat"
+                autoPlay: "Sayfa açılışında kanalları otomatik oynat",
+                fullscreen: "Tam Ekran",
+                exitFullscreen: "Tam Ekrandan Çık"
             },
             en: {
                 backToSettings: "Back to Settings",
@@ -56,7 +59,9 @@
                 channelPlaceholder: "Channel ID",
                 maxChannelsReached: "Maximum number of channels reached!",
                 enterAtLeastOne: "You must enter at least one channel ID!",
-                autoPlay: "Auto-play channels on page load"
+                autoPlay: "Auto-play channels on page load",
+                fullscreen: "Fullscreen",
+                exitFullscreen: "Exit Fullscreen"
             }
             // Add other languages as needed
         };
@@ -84,7 +89,6 @@
         languageOptions.forEach(option => {
             option.addEventListener('click', function() {
                 currentLang = this.getAttribute('data-lang');
-                // Here you would implement language switching logic
                 updateUIText();
                 alert('Dil değiştirildi: ' + currentLang);
             });
@@ -101,6 +105,7 @@
             document.getElementById('player-add-channel').textContent = lang.addChannel;
             document.getElementById('remove-channels').textContent = lang.removeSelected;
             document.querySelector('label[for="auto-start"]').textContent = lang.autoPlay;
+            document.getElementById('fullscreen-toggle').textContent = isFullscreen ? lang.exitFullscreen : lang.fullscreen;
         }
         
         // Generate channel input fields for settings page
@@ -149,7 +154,7 @@
             
             activeChannels.forEach((channel, index) => {
                 const div = document.createElement('div');
-                div.className = 'channel-input';
+                div.className = 'channel-input editor-input';
                 
                 const checkbox = document.createElement('input');
                 checkbox.type = 'checkbox';
@@ -173,7 +178,7 @@
             // Add empty slots for new channels
             for(let i = activeChannels.length; i < 25; i++) {
                 const div = document.createElement('div');
-                div.className = 'channel-input';
+                div.className = 'channel-input editor-input';
                 
                 const input = document.createElement('input');
                 input.type = 'text';
@@ -267,6 +272,51 @@
             renderVideoGrid();
         });
         
+        // Fullscreen toggle
+        document.getElementById('fullscreen-toggle').addEventListener('click', function() {
+            if (!isFullscreen) {
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen();
+                } else if (document.documentElement.mozRequestFullScreen) {
+                    document.documentElement.mozRequestFullScreen();
+                } else if (document.documentElement.webkitRequestFullscreen) {
+                    document.documentElement.webkitRequestFullscreen();
+                } else if (document.documentElement.msRequestFullscreen) {
+                    document.documentElement.msRequestFullscreen();
+                }
+                isFullscreen = true;
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+                isFullscreen = false;
+            }
+            
+            // Update button text
+            const lang = translations[currentLang] || translations.tr;
+            this.textContent = isFullscreen ? lang.exitFullscreen : lang.fullscreen;
+        });
+        
+        // Listen for fullscreen change events
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+        document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+        document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+        document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+        
+        function handleFullscreenChange() {
+            isFullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement || 
+                           document.mozFullScreenElement || document.msFullscreenElement);
+            
+            const lang = translations[currentLang] || translations.tr;
+            document.getElementById('fullscreen-toggle').textContent = isFullscreen ? lang.exitFullscreen : lang.fullscreen;
+        }
+        
         // Render the video grid
         function renderVideoGrid() {
             const validChannels = activeChannels.filter(channel => channel.id && channel.id.trim() !== '');
@@ -275,10 +325,37 @@
                 return;
             }
             
-            // Calculate grid dimensions
-            const columns = Math.ceil(Math.sqrt(validChannels.length));
+            // Calculate optimal grid dimensions
+            let rows, cols;
             
-            videoContainer.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+            const count = validChannels.length;
+            
+            // Determine the best grid layout based on count
+            if (count <= 4) {
+                cols = 2;
+                rows = 2;
+            } else if (count <= 6) {
+                cols = 3;
+                rows = 2;
+            } else if (count <= 9) {
+                cols = 3;
+                rows = 3;
+            } else if (count <= 12) {
+                cols = 4;
+                rows = 3;
+            } else if (count <= 16) {
+                cols = 4;
+                rows = 4;
+            } else if (count <= 20) {
+                cols = 5;
+                rows = 4;
+            } else {
+                cols = 5;
+                rows = 5;
+            }
+            
+            videoContainer.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+            videoContainer.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
             videoContainer.innerHTML = '';
             
             validChannels.forEach((channel, index) => {
@@ -286,11 +363,8 @@
                 
                 const videoContainer = document.createElement('div');
                 videoContainer.className = 'video-container';
-                videoContainer.style.aspectRatio = '16/9';
                 
                 const iframe = document.createElement('iframe');
-                iframe.width = '100%';
-                iframe.height = '100%';
                 iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=${autoStart ? 1 : 0}&mute=1`;
                 iframe.frameBorder = '0';
                 iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
@@ -393,30 +467,34 @@
         window.addEventListener('load', function() {
             const savedSettings = localStorage.getItem('multiTvSettings');
             if(savedSettings) {
-                const settings = JSON.parse(savedSettings);
-                currentLang = settings.lang || 'tr';
-                selectedCount = settings.count || selectedCount;
-                
-                // Only load saved channels if there are no default channels
-                if (defaultChannelIds.length === 0) {
-                    channelIds = settings.channels || Array(25).fill('');
-                }
-                
-                // Load autoStart setting
-                if (settings.autoStart !== undefined) {
-                    autoStart = settings.autoStart;
-                    autoStartCheckbox.checked = autoStart;
-                }
-                
-                countOptions.forEach(opt => {
-                    if(parseInt(opt.getAttribute('data-count')) === selectedCount) {
-                        opt.classList.add('active');
-                    } else {
-                        opt.classList.remove('active');
+                try {
+                    const settings = JSON.parse(savedSettings);
+                    currentLang = settings.lang || 'tr';
+                    selectedCount = settings.count || selectedCount;
+                    
+                    // Only load saved channels if there are no default channels
+                    if (defaultChannelIds.length === 0) {
+                        channelIds = settings.channels || Array(25).fill('');
                     }
-                });
-                
-                generateChannelInputs();
+                    
+                    // Load autoStart setting
+                    if (settings.autoStart !== undefined) {
+                        autoStart = settings.autoStart;
+                        autoStartCheckbox.checked = autoStart;
+                    }
+                    
+                    countOptions.forEach(opt => {
+                        if(parseInt(opt.getAttribute('data-count')) === selectedCount) {
+                            opt.classList.add('active');
+                        } else {
+                            opt.classList.remove('active');
+                        }
+                    });
+                    
+                    generateChannelInputs();
+                } catch (e) {
+                    console.error("Error loading saved settings:", e);
+                }
             }
         });
         
@@ -429,5 +507,25 @@
                 autoStart: autoStart
             };
             
-            localStorage.setItem('multiTvSettings', JSON.stringify(settings));
+            try {
+                localStorage.setItem('multiTvSettings', JSON.stringify(settings));
+            } catch (e) {
+                console.error("Error saving settings:", e);
+            }
+        });
+        
+        // Hide controls when mouse is idle
+        let mouseTimer;
+        const topControls = document.querySelector('.top-controls');
+        
+        document.addEventListener('mousemove', function() {
+            if (playerPage.classList.contains('hidden')) return;
+            
+            clearTimeout(mouseTimer);
+            topControls.style.opacity = '1';
+            
+            mouseTimer = setTimeout(function() {
+                if (!channelEditor.classList.contains('hidden')) return;
+                topControls.style.opacity = '0';
+            }, 3000);
         });
