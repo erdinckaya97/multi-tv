@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi TV | Canlı Yayınlar</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="settings-page">
+        <h1>Multi TV | Ayarlar</h1>
+        
+        <div class="section">
+            <div class="section-title">Dil</div>
+            <div class="language-options">
+                <span class="language-option" data-lang="tr">Türkçe</span> | 
+                <span class="language-option" data-lang="en">English</span> | 
+                <span class="language-option" data-lang="fr">Français</span> | 
+                <span class="language-option" data-lang="es">Español</span> | 
+                <span class="language-option" data-lang="ar">العربية</span> | 
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">Kanal sayısı</div>
+            <div class="channel-count">
+                <div class="count-option" data-count="4">4</div>
+                <div class="count-option" data-count="6">6</div>
+                <div class="count-option" data-count="9">9</div>
+                <div class="count-option" data-count="12">12</div>
+                <div class="count-option" data-count="16">16</div>
+                <div class="count-option" data-count="20">20</div>
+                <div class="count-option" data-count="25">25</div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">Kanalları değiştir</div>
+            <p>Kanal adresi bölümüne YouTube yayın adresi uzantısını girmelisiniz.</p>
+            
+            <div class="channel-settings" id="channel-inputs">
+                <!-- Channel inputs will be generated here -->
+            </div>
+            
+            <div class="buttons">
+                <button class="btn btn-secondary" id="add-channel">Yeni kanal ekle</button>
+                <button class="btn btn-primary" id="save-settings">Ayarları kaydet</button>
+            </div>
+            
+            <div class="auto-start">
+                <input type="checkbox" id="auto-start" checked>
+                <label for="auto-start">Sayfa açılışında kanalları otomatik oynat</label>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Bir Multi TV Uygulaması | 2025</p>
+        </div>
+    </div>
+    
+    <div id="player-page" class="hidden">
+        <div class="top-controls">
+            <div class="player-controls-left">
+                <button class="btn btn-secondary" id="back-to-settings">Ayarlara Dön</button>
+                <button class="btn btn-secondary" id="toggle-channel-editor">Kanalları Düzenle</button>
+            </div>
+            <div class="player-controls-right">
+                <button class="btn btn-primary" id="apply-changes">Değişiklikleri Uygula</button>
+                <button class="btn btn-primary" id="fullscreen-toggle">Tam Ekran</button>
+            </div>
+        </div>
+        
+        <div id="channel-editor" class="channel-editor hidden">
+            <div class="channel-editor-title">Kanal Düzenleme</div>
+            <div id="player-channel-inputs">
+                <!-- Channel inputs for player page will be generated here -->
+            </div>
+            <div class="buttons" style="margin-top: 15px;">
+                <button class="btn btn-secondary" id="player-add-channel">Yeni kanal ekle</button>
+                <button class="btn btn-danger" id="remove-channels">Seçili Kanalları Kaldır</button>
+            </div>
+        </div>
+        
+        <div class="video-grid" id="video-container">
+            <!-- Videos will be populated here -->
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
