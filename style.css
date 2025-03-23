@@ -1,0 +1,166 @@
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .section {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .section-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .language-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .language-option {
+            cursor: pointer;
+            padding: 5px 10px;
+        }
+        .language-option:hover {
+            text-decoration: underline;
+        }
+        .channel-count {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .count-option {
+            cursor: pointer;
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .count-option.active {
+            background-color: #007bff;
+            color: white;
+        }
+        .channel-settings {
+            margin-top: 20px;
+        }
+        .channel-input {
+            display: flex;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        .channel-input input {
+            flex-grow: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .channel-input button {
+            margin-left: 10px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 14px;
+            color: #666;
+        }
+        .video-grid {
+            display: grid;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .hidden {
+            display: none;
+        }
+        .player-page {
+            padding: 20px;
+            background-color: black;
+            margin-top: 20px;
+            border-radius: 5px;
+            color: white;
+        }
+        .video-container {
+            position: relative;
+        }
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(0, 0, 0, 0.7);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .video-container:hover .video-overlay {
+            opacity: 1;
+        }
+        .player-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #333;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .player-controls-left, .player-controls-right {
+            display: flex;
+            gap: 10px;
+        }
+        .channel-editor {
+            background-color: #333;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .channel-editor-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .auto-start {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
