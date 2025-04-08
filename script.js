@@ -9,7 +9,7 @@
             "RNVNlJSUFoE",
             "ZSWPj9szKb8",
             "6BX-NUzBSp8", 
-            "nmY9i63t6qo"  
+            "nmY9i63t6o"  
         ];
         
         let channelIds = Array(25).fill('');
@@ -47,7 +47,11 @@
                 enterAtLeastOne: "En az bir kanal ID'si girmelisiniz!",
                 autoPlay: "Sayfa açılışında kanalları otomatik oynat",
                 fullscreen: "Tam Ekran",
-                exitFullscreen: "Tam Ekrandan Çık"
+                exitFullscreen: "Tam Ekrandan Çık",
+                mute: "Sesi Kapat",
+                unmute: "Sesi Aç",
+                fullscreenVideo: "Tam Ekran Yap",
+                remove: "Kaldır"
             },
             en: {
                 backToSettings: "Back to Settings",
@@ -61,7 +65,11 @@
                 enterAtLeastOne: "You must enter at least one channel ID!",
                 autoPlay: "Auto-play channels on page load",
                 fullscreen: "Fullscreen",
-                exitFullscreen: "Exit Fullscreen"
+                exitFullscreen: "Exit Fullscreen",
+                mute: "Mute",
+                unmute: "Unmute",
+                fullscreenVideo: "Fullscreen",
+                remove: "Remove"
             }
             // Add other languages as needed
         };
@@ -106,6 +114,20 @@
             document.getElementById('remove-channels').textContent = lang.removeSelected;
             document.querySelector('label[for="auto-start"]').textContent = lang.autoPlay;
             document.getElementById('fullscreen-toggle').textContent = isFullscreen ? lang.exitFullscreen : lang.fullscreen;
+            
+            // Update video control buttons
+            document.querySelectorAll('.mute-btn').forEach(btn => {
+                const isMuted = btn.getAttribute('data-muted') === 'true';
+                btn.textContent = isMuted ? lang.unmute : lang.mute;
+            });
+            
+            document.querySelectorAll('.fullscreen-video-btn').forEach(btn => {
+                btn.textContent = lang.fullscreenVideo;
+            });
+            
+            document.querySelectorAll('.remove-video-btn').forEach(btn => {
+                btn.textContent = lang.remove;
+            });
         }
         
         // Generate channel input fields for settings page
@@ -361,8 +383,9 @@
             validChannels.forEach((channel, index) => {
                 const videoId = channel.id.trim();
                 
-                const videoContainer = document.createElement('div');
-                videoContainer.className = 'video-container';
+                const videoContainerDiv = document.createElement('div');
+                videoContainerDiv.className = 'video-container';
+                videoContainerDiv.id = `video-container-${index}`;
                 
                 const iframe = document.createElement('iframe');
                 iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=${autoStart ? 1 : 0}&mute=1`;
@@ -373,20 +396,64 @@
                 const overlay = document.createElement('div');
                 overlay.className = 'video-overlay';
                 
+                const controlsDiv = document.createElement('div');
+                controlsDiv.className = 'video-controls';
+                
+                const lang = translations[currentLang] || translations.tr;
+                
+                // Mute/Unmute button
+                const muteBtn = document.createElement('button');
+                muteBtn.className = 'btn btn-success mute-btn';
+                muteBtn.textContent = lang.unmute; // Starts muted, so button shows "Unmute"
+                muteBtn.setAttribute('data-muted', 'true');
+                muteBtn.addEventListener('click', function() {
+                    const isMuted = this.getAttribute('data-muted') === 'true';
+                    const newMuteState = !isMuted;
+                    
+                    // Update iframe src to toggle mute
+                    iframe.src = iframe.src.replace(/mute=\d/, `mute=${newMuteState ? 1 : 0}`);
+                    
+                    // Update button text and state
+                    this.setAttribute('data-muted', newMuteState);
+                    this.textContent = newMuteState ? lang.unmute : lang.mute;
+                });
+                
+                // Fullscreen button for this video
+                const fullscreenBtn = document.createElement('button');
+                fullscreenBtn.className = 'btn btn-info fullscreen-video-btn';
+                fullscreenBtn.textContent = lang.fullscreenVideo;
+                fullscreenBtn.addEventListener('click', function() {
+                    const container = videoContainerDiv;
+                    
+                    if (container.requestFullscreen) {
+                        container.requestFullscreen();
+                    } else if (container.mozRequestFullScreen) {
+                        container.mozRequestFullScreen();
+                    } else if (container.webkitRequestFullscreen) {
+                        container.webkitRequestFullscreen();
+                    } else if (container.msRequestFullscreen) {
+                        container.msRequestFullscreen();
+                    }
+                });
+                
+                // Remove button
                 const removeBtn = document.createElement('button');
-                removeBtn.className = 'btn btn-danger';
-                removeBtn.textContent = 'Kaldır';
+                removeBtn.className = 'btn btn-danger remove-video-btn';
+                removeBtn.textContent = lang.remove;
                 removeBtn.addEventListener('click', function(e) {
                     e.preventDefault();
                     activeChannels.splice(index, 1);
                     renderVideoGrid();
                 });
                 
-                overlay.appendChild(removeBtn);
-                videoContainer.appendChild(iframe);
-                videoContainer.appendChild(overlay);
+                controlsDiv.appendChild(muteBtn);
+                controlsDiv.appendChild(fullscreenBtn);
+                controlsDiv.appendChild(removeBtn);
+                overlay.appendChild(controlsDiv);
+                videoContainerDiv.appendChild(iframe);
+                videoContainerDiv.appendChild(overlay);
                 
-                document.getElementById('video-container').appendChild(videoContainer);
+                videoContainer.appendChild(videoContainerDiv);
             });
             
             // Hide the channel editor after applying changes
