@@ -219,8 +219,14 @@
             padding: 20px;
         }
         
-        .video-container:hover .video-overlay {
+        /* Normal modda butonları göster */
+        .video-container:not(:fullscreen):hover .video-overlay {
             opacity: 1;
+        }
+        
+        /* Tam ekran modunda butonları gizle */
+        .video-container:fullscreen .video-overlay {
+            display: none;
         }
         
         .video-controls {
