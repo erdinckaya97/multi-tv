@@ -204,10 +204,18 @@
             background-color: rgba(0, 0, 0, 0.7);
             opacity: 0;
             transition: opacity 0.3s;
+            gap: 10px; /* Butonlar arasında boşluk */
         }
         
         .video-container:hover .video-overlay {
             opacity: 1;
+        }
+        
+        .video-btn {
+            padding: 8px 12px;
+            margin: 0 5px;
+            cursor: pointer;
+            font-size: 14px;
         }
         
         .channel-editor {
@@ -259,4 +267,17 @@
         
         .hidden {
             display: none;
+        }
+        
+        /* Responsive styles for overlay buttons */
+        @media (max-width: 768px) {
+            .video-overlay {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .video-btn {
+                font-size: 12px;
+                padding: 5px 8px;
+            }
         }
