@@ -3,90 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>Multi TV | Canlı Yayınlar</title>
+    <link rel="preconnect" href="https://www.youtube.com">
+    <link rel="preconnect" href="https://i.ytimg.com">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="settings-page">
-        <h1>Multi TV | Ayarlar</h1>
-        
-        <div class="section">
-            <div class="section-title">Dil</div>
-            <div class="language-options">
-                <span class="language-option" data-lang="tr">Türkçe</span> | 
-                <span class="language-option" data-lang="en">English</span> | 
-                <span class="language-option" data-lang="fr">Français</span> | 
-                <span class="language-option" data-lang="es">Español</span> | 
-                <span class="language-option" data-lang="ar">العربية</span> | 
+    <main id="settings-page" class="hidden">
+        <header class="settings-header">
+            <h1 data-i18n="title">Multi TV</h1>
+            <p data-i18n="subtitle"></p>
+        </header>
+
+        <div id="file-warning" class="notice hidden" data-i18n="fileProtocol"></div>
+
+        <section class="section">
+            <div class="section-title" data-i18n="language">Dil</div>
+            <div class="segmented" id="language-options">
+                <button type="button" data-lang="tr">Türkçe</button>
+                <button type="button" data-lang="en">English</button>
             </div>
-        </div>
-        
-        <div class="section">
-            <div class="section-title">Kanal sayısı</div>
-            <div class="channel-count">
-                <div class="count-option" data-count="4">4</div>
-                <div class="count-option" data-count="6">6</div>
-                <div class="count-option" data-count="9">9</div>
-                <div class="count-option" data-count="12">12</div>
-                <div class="count-option" data-count="16">16</div>
-                <div class="count-option" data-count="20">20</div>
-                <div class="count-option" data-count="25">25</div>
+        </section>
+
+        <section class="section">
+            <div class="section-title">
+                <span data-i18n="channels">Kanallar</span>
+                <span class="channel-counter" id="channel-counter"></span>
             </div>
-        </div>
-        
-        <div class="section">
-            <div class="section-title">Kanalları değiştir</div>
-            <p>Kanal adresi bölümüne YouTube yayın adresi uzantısını girmelisiniz.</p>
-            
-            <div class="channel-settings" id="channel-inputs">
-                <!-- Channel inputs will be generated here -->
-            </div>
-            
+            <p class="help" data-i18n="channelsHelp"></p>
+
+            <div id="channel-list" class="channel-list"></div>
+            <p id="form-error" class="form-error hidden" role="alert"></p>
+
             <div class="buttons">
-                <button class="btn btn-secondary" id="add-channel">Yeni kanal ekle</button>
-                <button class="btn btn-primary" id="save-settings">Ayarları kaydet</button>
+                <button type="button" class="btn btn-secondary" id="add-channel" data-i18n="addChannel">Kanal ekle</button>
+                <button type="button" class="btn btn-secondary" id="reset-defaults" data-i18n="resetDefaults">Varsayılan kanallar</button>
             </div>
-            
-            <div class="auto-start">
-                <input type="checkbox" id="auto-start" checked>
-                <label for="auto-start">Sayfa açılışında kanalları otomatik oynat</label>
+        </section>
+
+        <section class="section">
+            <div class="section-title">
+                <span data-i18n="proxy">Proxy</span>
+                <span id="proxy-status" class="proxy-status"></span>
             </div>
+            <p class="help" data-i18n="proxyHelp"></p>
+            <input type="url" id="proxy-url" class="text-input" autocomplete="off" spellcheck="false" data-i18n-placeholder="proxyUrlPlaceholder">
+        </section>
+
+        <section class="section">
+            <label class="checkbox">
+                <input type="checkbox" id="auto-start">
+                <span data-i18n="autoplay">Sayfa açılınca yayınları otomatik başlat</span>
+            </label>
+        </section>
+
+        <div class="actions">
+            <button type="button" class="btn btn-primary btn-large" id="save-settings" data-i18n="saveAndWatch">Kaydet ve izle</button>
         </div>
-        
-        <div class="footer">
-            <p>Bir Multi TV Uygulaması | 2025</p>
-        </div>
-    </div>
-    
+
+        <footer class="footer" data-i18n="footer">Multi TV</footer>
+    </main>
+
     <div id="player-page" class="hidden">
-        <div class="top-controls">
-            <div class="player-controls-left">
-                <button class="btn btn-secondary" id="back-to-settings">Ayarlara Dön</button>
-                <button class="btn btn-secondary" id="toggle-channel-editor">Kanalları Düzenle</button>
-            </div>
-            <div class="player-controls-right">
-                <button class="btn btn-primary" id="apply-changes">Değişiklikleri Uygula</button>
-                <button class="btn btn-primary" id="fullscreen-toggle">Tam Ekran</button>
-            </div>
+        <div class="player-bar-zone">
+            <header class="player-bar">
+                <div class="brand">
+                    <span class="brand-dot"></span>
+                    <span class="brand-name">Multi TV</span>
+                    <span class="brand-count" id="channel-count"></span>
+                </div>
+                <div class="player-actions">
+                    <div class="segmented segmented-dark" role="group" aria-label="Language">
+                        <button type="button" data-lang="tr">TR</button>
+                        <button type="button" data-lang="en">EN</button>
+                    </div>
+                    <button type="button" class="bar-btn" id="back-to-settings">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/></svg>
+                        <span data-i18n="settings">Ayarlar</span>
+                    </button>
+                    <button type="button" class="bar-btn bar-btn-primary" id="fullscreen-toggle">
+                        <svg viewBox="0 0 24 24" aria-hidden="true" class="icon-enter"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M16 21h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+                        <svg viewBox="0 0 24 24" aria-hidden="true" class="icon-exit"><path d="M8 3v3a2 2 0 0 1-2 2H3M21 8h-3a2 2 0 0 1-2-2V3M16 21v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg>
+                        <span class="fullscreen-label">Tam ekran</span>
+                    </button>
+                </div>
+            </header>
         </div>
-        
-        <div id="channel-editor" class="channel-editor hidden">
-            <div class="channel-editor-title">Kanal Düzenleme</div>
-            <div id="player-channel-inputs">
-                <!-- Channel inputs for player page will be generated here -->
-            </div>
-            <div class="buttons" style="margin-top: 15px;">
-                <button class="btn btn-secondary" id="player-add-channel">Yeni kanal ekle</button>
-                <button class="btn btn-danger" id="remove-channels">Seçili Kanalları Kaldır</button>
-            </div>
-        </div>
-        
-        <div class="video-grid" id="video-container">
-            <!-- Videos will be populated here -->
-        </div>
+        <div class="video-grid" id="video-grid"></div>
+        <p id="empty-state" class="empty-state hidden" data-i18n="empty"></p>
     </div>
 
-    <script src="script.js"></script>
+    <template id="channel-row-template">
+        <div class="channel-row">
+            <div class="channel-main">
+                <span class="channel-index"></span>
+                <input type="text" class="channel-name" maxlength="40" autocomplete="off">
+                <input type="text" class="channel-source" autocomplete="off" spellcheck="false">
+                <span class="channel-type"></span>
+                <button type="button" class="btn-icon channel-remove" aria-label="Kaldır">&times;</button>
+            </div>
+            <div class="channel-advanced hidden">
+                <label class="field">
+                    <span class="field-label" data-i18n="referer">Referer</span>
+                    <span class="field-inline">
+                        <input type="url" class="channel-referer" autocomplete="off" spellcheck="false" data-i18n-placeholder="refererPlaceholder">
+                        <button type="button" class="btn-link channel-auto-referer" data-i18n="autoReferer">Otomatik</button>
+                    </span>
+                </label>
+                <label class="field">
+                    <span class="field-label" data-i18n="browserIdentity">Tarayıcı kimliği</span>
+                    <select class="channel-ua"></select>
+                </label>
+                <input type="text" class="channel-ua-custom text-input hidden" autocomplete="off" spellcheck="false" data-i18n-placeholder="customUserAgentPlaceholder">
+                <label class="checkbox checkbox-small">
+                    <input type="checkbox" class="channel-proxy">
+                    <span data-i18n="useProxy"></span>
+                </label>
+            </div>
+        </div>
+    </template>
 
+    <script src="lib.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

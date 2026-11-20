@@ -1,0 +1,13 @@
+{
+  "name": "multi-tv",
+  "version": "2.0.0",
+  "description": "Watch multiple YouTube live streams and M3U8 streams on one screen",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
