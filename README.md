@@ -55,13 +55,6 @@ Switch the interface language anytime from Settings or the player's top bar. On 
 </tr>
 </table>
 
-### 🇹🇷 Ready-made news wall
-
-Out of the box you get six Turkish news channels:
-
-| A Haber | Habertürk | Sözcü TV | CNN Türk | tv100 | Haber Global |
-|:---:|:---:|:---:|:---:|:---:|:---:|
-
 ## 🚀 Quick start
 
 **Just YouTube?** Open the [live demo](https://erdinckaya97.github.io/multi-tv/). That's it.
